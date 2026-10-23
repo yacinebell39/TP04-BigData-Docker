@@ -1,0 +1,4 @@
+# Big Data Analytics TP04 Requirements
+# Uses Python standard library for ultra-fast processing
+# Optional utilities:
+requests>=2.28.0

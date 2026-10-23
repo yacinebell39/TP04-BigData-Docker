@@ -1,0 +1,13 @@
+# Git ignore for Big Data TP04
+# Ignore all CSV datasets
+*.csv
+data/*.csv
+sample_safecast.csv
+safecast_5gb.csv
+*.csv.gz
+
+# Python cache and environments
+__pycache__/
+*.pyc
+.env
+.venv/
