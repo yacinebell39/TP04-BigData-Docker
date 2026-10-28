@@ -134,6 +134,7 @@ docker ps
 services:
   data-analysis:
     build: .
+    image: soufi39/tp04-data-analysis:latest
     container_name: tp04-analysis
     volumes:
       - ./data:/app/data:ro
