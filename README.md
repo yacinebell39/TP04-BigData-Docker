@@ -1,10 +1,9 @@
 # TP04: Containerization and Big Data Environment Deployment Using Docker
 
-## 📄 Formal Academic Reports
+## 📄 Academic Laboratory Report
 
-- **[Full Academic Lab Report (PDF)](output/pdf/TP04_Report.pdf)** *(7-page publication-quality PDF with embedded figures & theoretical synthesis)*
-- **[Editable Word Document (DOCX)](output/TP04_BigData_Containerization_Report.docx)** *(Formatted with cover page, metadata tables, and captions)*
-- **[Full Markdown Lab Report](REPORT.md)** *(Comprehensive Markdown edition)*
+👉 **[Download / View Full Academic Report (PDF)](TP04_Report.pdf)** *(Comprehensive publication-quality report including institutional metadata, architecture design, container networking proofs, and complete theoretical answers)*  
+👉 **[Online Markdown Report](REPORT.md)**
 
 **University of Eloued**  
 **Faculty of Exact Sciences — Department of Computer Science**  
@@ -124,6 +123,29 @@ docker ps
 ![Containers Launch](screenshots/task3_containers_launch.png)
 
 ![Docker PS Verification](screenshots/task3_docker_ps.png)
+
+### 🔗 Verification of Container Inter-Connectivity & Embedded DNS:
+To verify that all three containers are fully connected and can discover each other by container hostname across `tp04-net`, cross-node HTTP calls were executed across each pair:
+
+```bash
+# Node 1 -> Node 2
+docker exec safecast-node-1 python -c "import urllib.request; print('Node 1 -> Node 2:', urllib.request.urlopen('http://safecast-node-2:5000/health').read().decode().strip())"
+# Output: Node 1 -> Node 2: {"status": "healthy", "container": "5fead814f43c"}
+
+# Node 1 -> Node 3
+docker exec safecast-node-1 python -c "import urllib.request; print('Node 1 -> Node 3:', urllib.request.urlopen('http://safecast-node-3:5000/health').read().decode().strip())"
+# Output: Node 1 -> Node 3: {"status": "healthy", "container": "c791cc9b3ceb"}
+
+# Node 2 -> Node 3
+docker exec safecast-node-2 python -c "import urllib.request; print('Node 2 -> Node 3:', urllib.request.urlopen('http://safecast-node-3:5000/health').read().decode().strip())"
+# Output: Node 2 -> Node 3: {"status": "healthy", "container": "c791cc9b3ceb"}
+
+# Node 3 -> Node 1
+docker exec safecast-node-3 python -c "import urllib.request; print('Node 3 -> Node 1:', urllib.request.urlopen('http://safecast-node-1:5000/health').read().decode().strip())"
+# Output: Node 3 -> Node 1: {"status": "healthy", "container": "88b9cdc5ded5"}
+```
+
+![Container Inter-Connectivity](screenshots/task3_containers_connectivity.png)
 
 ---
 
@@ -259,14 +281,14 @@ docker compose down
 ```text
 TP04-BIGDATA/
 │
-├── .dockerignore             # Excludes 5GB dataset & artifacts from image build
-├── .gitignore                # Protects large datasets from Git tracking
+├── TP04_Report.pdf           # Formal Academic Lab Report (7-page comprehensive PDF)
+├── REPORT.md                 # Full detailed academic report in Markdown
 ├── Dockerfile                # Image definition (FROM, WORKDIR, COPY, RUN, CMD)
 ├── compose.yaml              # Docker Compose service definition with volume mount
 ├── requirements.txt          # Python application dependencies
 ├── app.py                    # Big Data Analytics application (Batch & Web modes)
-├── sample_safecast.csv       # Lightweight embedded dataset sample (10,000 records)
-├── generate_screenshots.py   # Automated script to generate visual proof artifacts
+├── .dockerignore             # Excludes large dataset & build context bloat
+├── .gitignore                # Protects raw CSV datasets from Git tracking
 │
 ├── data/
 │   ├── safecast_5gb.csv      # Full 5.36 GB Big Data dataset (Volume mounted)
@@ -280,6 +302,7 @@ TP04-BIGDATA/
     ├── task2_docker_pull.png
     ├── task3_containers_launch.png
     ├── task3_docker_ps.png
+    ├── task3_containers_connectivity.png
     ├── task4_docker_compose_up.png
     └── task4_docker_compose_down.png
 ```

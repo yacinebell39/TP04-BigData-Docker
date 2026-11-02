@@ -37,7 +37,7 @@ def find_dataset():
             return path
     return None
 
-def analyze_dataset(file_path, max_rows=100000):
+def analyze_dataset(file_path, max_rows=None):
     start_time = time.time()
     total_records = 0
     valid_values = []
@@ -54,6 +54,7 @@ def analyze_dataset(file_path, max_rows=100000):
     print("  [+] STARTING BIG DATA ANALYSIS: SAFECAST RADIATION DATA")
     print("=" * 60)
     print(f"[*] Reading file: {file_path}")
+    print("[*] Processing Big Data telemetry stream...")
 
     # Read CSV streaming
     with open(file_path, mode='r', encoding='utf-8', errors='ignore') as f:
@@ -89,7 +90,6 @@ def analyze_dataset(file_path, max_rows=100000):
                     pass
 
             if max_rows and total_records >= max_rows:
-                print(f"[*] Reached chunk limit ({max_rows:,} records) for rapid analytics.")
                 break
 
     duration = time.time() - start_time

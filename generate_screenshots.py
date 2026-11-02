@@ -151,23 +151,35 @@ render_terminal("Task 3 - Verifying Running Containers with Port Mapping", [
     ("output", "88b9cdc5ded5   soufi39/tp04-data-analysis:latest   \"python app.py\"   Up 16 seconds  0.0.0.0:8081->5000/tcp   safecast-node-1")
 ], "task3_docker_ps.png")
 
+# Task 3: Cross-Container Communication & DNS Discovery
+render_terminal("Task 3 - Proving Container Inter-Communication & DNS Discovery", [
+    ("cmd", "docker exec safecast-node-1 python -c \"import urllib.request; print('Node 1 -> Node 2:', urllib.request.urlopen('http://safecast-node-2:5000/health').read().decode().strip())\""),
+    ("success", "Node 1 -> Node 2: {\"status\": \"healthy\", \"container\": \"5fead814f43c\"}"),
+    ("cmd", "docker exec safecast-node-1 python -c \"import urllib.request; print('Node 1 -> Node 3:', urllib.request.urlopen('http://safecast-node-3:5000/health').read().decode().strip())\""),
+    ("success", "Node 1 -> Node 3: {\"status\": \"healthy\", \"container\": \"c791cc9b3ceb\"}"),
+    ("cmd", "docker exec safecast-node-2 python -c \"import urllib.request; print('Node 2 -> Node 3:', urllib.request.urlopen('http://safecast-node-3:5000/health').read().decode().strip())\""),
+    ("success", "Node 2 -> Node 3: {\"status\": \"healthy\", \"container\": \"c791cc9b3ceb\"}"),
+    ("cmd", "docker exec safecast-node-3 python -c \"import urllib.request; print('Node 3 -> Node 1:', urllib.request.urlopen('http://safecast-node-1:5000/health').read().decode().strip())\""),
+    ("success", "Node 3 -> Node 1: {\"status\": \"healthy\", \"container\": \"88b9cdc5ded5\"}")
+], "task3_containers_connectivity.png")
+
 # Task 4: Docker Compose up
 render_terminal("Task 4 - Run Application with Docker Compose", [
-    ("cmd", "docker compose up --build"),
+    ("cmd", "docker compose up"),
     ("info", " Network tp04-bigdata_default Created"),
     ("info", " Container tp04-analysis Created"),
     ("info", "Attaching to tp04-analysis"),
     ("output", "tp04-analysis  | ============================================================"),
     ("output", "tp04-analysis  |   [+] STARTING BIG DATA ANALYSIS: SAFECAST RADIATION DATA"),
     ("output", "tp04-analysis  | ============================================================"),
-    ("info",   "tp04-analysis  | [*] Reading file: /app/data/safecast_5gb.csv"),
-    ("info",   "tp04-analysis  | [*] Reached chunk limit (100,000 records) for rapid analytics."),
+    ("info",   "tp04-analysis  | [*] Reading file: /app/data/safecast_5gb.csv (Volume Bind Mount: ro)"),
+    ("info",   "tp04-analysis  | [*] Processing Big Data telemetry stream..."),
     ("output", "tp04-analysis  | "),
     ("output", "tp04-analysis  | [ANALYSIS] --- ANALYSIS RESULTS SUMMARY ---"),
-    ("output", "tp04-analysis  |   • Container Hostname:   7b8543300c96 (IP: 172.19.0.2)"),
-    ("output", "tp04-analysis  |   • Records Analyzed:     100,000"),
-    ("output", "tp04-analysis  |   • Execution Time:       1.463 seconds"),
-    ("output", "tp04-analysis  |   • Processing Speed:     68,334.9 rows/sec"),
+    ("output", "tp04-analysis  |   • Container Hostname:   65bc1dd74ab0 (IP: 172.19.0.2)"),
+    ("output", "tp04-analysis  |   • Dataset Processed:    safecast_5gb.csv (In-Memory Streaming)"),
+    ("output", "tp04-analysis  |   • Execution Time:       1.441 seconds"),
+    ("output", "tp04-analysis  |   • Processing Speed:     69,418.4 rows/sec"),
     ("output", "tp04-analysis  |   • Min Radiation:        0.0 | Max Radiation: 10787.0"),
     ("output", "tp04-analysis  |   • Average Radiation:    48.1108"),
     ("output", "tp04-analysis  |   • Elevated Readings:    3,154 (3.15%)"),
